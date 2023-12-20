@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">GptBot</string>
+    <string name="title_activity_chat_screen">chatScreen</string>
+</resources>
