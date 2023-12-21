@@ -63,5 +63,5 @@ fun SplashLogo(imageUrl : String) {
 @Preview(showBackground = true)
 @Composable
 fun LogoPreview() {
-    SplashLogo("https://chatbot.design/images/chatbot/DIGITAL%20%28RGB%29/PNG/Mark_RGB_Blue.png")
+    SplashLogo(R.string.logo_url.toString())
 }

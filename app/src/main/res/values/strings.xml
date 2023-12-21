@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">GptBot</string>
     <string name="title_activity_chat_screen">chatScreen</string>
+    <string name="logo_url">https://chatbot.design/images/chatbot/DIGITAL%20%28RGB%29/PNG/Mark_RGB_Blue.png</string>
+    <string name="openAIKey">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</string>
+    <string name="openAIBaseUrl">https://api.openai.com/v1/chat/</string>
+    <string name="gptModel">gpt-3.5-turbo</string>
 </resources>
