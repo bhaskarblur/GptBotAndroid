@@ -27,7 +27,6 @@ class LoggingInterceptor : Interceptor {
                 response.request.url, (t2 - t1) / 1e6, response.headers
             )
         )
-
-        return chain.proceed(request);
+        return response;
     }
 }

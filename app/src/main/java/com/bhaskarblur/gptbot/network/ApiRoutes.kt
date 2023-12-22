@@ -8,6 +8,6 @@ import retrofit2.http.POST
 
 interface ApiRoutes {
 
-   @POST("/completions/")
+   @POST("completions")
    suspend fun sendMessageToGpt(@Body gptBody: gptBody) : messageResponse
 }

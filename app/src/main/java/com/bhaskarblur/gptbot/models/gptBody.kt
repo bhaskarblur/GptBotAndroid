@@ -6,7 +6,7 @@ import java.sql.Timestamp
 
 data class gptBody(
     var messages: List<messageBody>,
-    var model: String = R.string.gptModel.toString(),
+    var model: String = "gpt-3.5-turbo",
 )
 data class messageBody(
     var role: String,
