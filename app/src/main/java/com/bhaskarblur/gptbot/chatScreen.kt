@@ -44,6 +44,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -100,11 +101,15 @@ class ChatScreen : ComponentActivity() {
                     showDialog.value = false;
                 })
             }
-            val messageList = viewModel._chatStateFlow.collectAsStateWithLifecycle().value
-            LaunchedEffect(messageList) {
-                viewModel._chatStateFlow.collect {
-                    listScrollState.animateScrollToItem(it.size - 1)
+            val messageList = viewModel.chatList.value!!
+
+            viewModel.chatList.observe(this@ChatScreen) {list ->
+                list.forEach {
+                    if(!messageList.contains(it)) {
+                        messageList.add(it)
+                    }
                 }
+
             }
             Column(
                 modifier = Modifier
@@ -151,12 +156,12 @@ class ChatScreen : ComponentActivity() {
                 LazyColumn(
                     modifier = Modifier
                         .padding(vertical = 6.dp)
-                        .fillMaxHeight(0.9f)
+                        .fillMaxHeight(0.86f)
                         .scrollable(listScrollState, Orientation.Vertical)
                 ) {
                     lifecycleScope.launch {
-                        if (viewModel._chatStateFlow.value.size > 0) {
-                            listScrollState.animateScrollToItem(viewModel._chatStateFlow.value.size - 1)
+                        if (messageList.size > 0) {
+                            listScrollState.animateScrollToItem(messageList.size - 1)
                         }
                     }
                     items(items = messageList) {
@@ -382,6 +387,7 @@ fun AlertDialogComponent(context: Context, onYesPressed: () -> Unit,
                     onClick = {
                         openDialog.value = false
                         onYesPressed()
+                        onClose()
                     }
                 ) {
                     Text("Yes", color = Color.White)
@@ -391,6 +397,7 @@ fun AlertDialogComponent(context: Context, onYesPressed: () -> Unit,
                 TextButton(
                     onClick = {
                         openDialog.value = false
+                        onClose()
                     }
                 ) {
                     // adding text to our button.

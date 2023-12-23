@@ -1,6 +1,7 @@
 package com.bhaskarblur.gptbot.viewModel
 
 import android.util.Log
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bhaskarblur.gptbot.Repo.chatGptRepo
@@ -19,9 +20,8 @@ import javax.inject.Inject
 class chatViewModel @Inject constructor(
     private val apiServiceRepo: chatGptRepo
 ) : ViewModel() {
-    private val chatStateFlow = MutableStateFlow(ArrayList<messageModel>())
-    val _chatStateFlow : StateFlow<ArrayList<messageModel>>
-        get() = chatStateFlow
+
+    val chatList = MutableLiveData<ArrayList<messageModel>>(arrayListOf())
 
 
     init {
@@ -31,10 +31,10 @@ class chatViewModel @Inject constructor(
     fun sendMessage(message: String) {
         val messageModel= messageModel(sender = "user", message = message,
             timestamp = System.currentTimeMillis())
-        chatStateFlow.value.add(messageModel);
+        chatList.value!!.add(messageModel);
 
         val gptChatList = ArrayList<messageBody>();
-        chatStateFlow.value.forEach {
+        chatList.value?.forEach {
             gptChatList.add(messageBody(role = it.sender, content = it.message));
         }
         viewModelScope.launch(Dispatchers.Main) {
@@ -46,15 +46,15 @@ class chatViewModel @Inject constructor(
                         message = "There was an error in sending message.",
                         timestamp = System.currentTimeMillis()
                     )
-                    Log.d("error", it.message.toString())
-                    chatStateFlow.value.add(errorMsg)
+                    it.localizedMessage?.let { it1 -> Log.d("error", it1.toString()) }
+                    chatList.value?.add(errorMsg)
                     apiServiceRepo.storeMessage(errorMsg);
                 }
                 .collect { recMsg ->
                     val msg = messageModel(
                         recMsg.choices[0].message.content, sender = recMsg.choices[0].message.role,
                         timestamp = System.currentTimeMillis())
-                    chatStateFlow.value.add(msg);
+                    chatList.value?.add(msg);
                     apiServiceRepo.storeMessage(msg);
                 }
 
@@ -67,21 +67,21 @@ class chatViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO)  {
             apiServiceRepo.deleteAllMessages()
         }
-        chatStateFlow.value = arrayListOf()
+        chatList.value = arrayListOf()
         val welcomeMessageModel = messageModel(sender = "assistant",
             message = "Welcome to Gpt Bot, how can i help you?",
             timestamp = System.currentTimeMillis())
-        chatStateFlow.value.add(welcomeMessageModel)
+        chatList.value!!.add(welcomeMessageModel)
     }
     private fun loadMessageHistory() {
         val welcomeMessageModel = messageModel(sender = "assistant",
             message = "Welcome to Gpt Bot, how can i help you?",
             timestamp = System.currentTimeMillis())
-        chatStateFlow.value.add(welcomeMessageModel)
+        chatList.value?.add(welcomeMessageModel)
       viewModelScope.launch(Dispatchers.IO)  {
           apiServiceRepo.getChatHistory().collect { recMsg ->
               recMsg.forEach {
-                  chatStateFlow.value.add(it)
+                  chatList.value?.add(it)
               }
 
           }
