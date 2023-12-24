@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import javax.inject.Inject
 
-class chatGptRepo @Inject constructor(
+class chatRepo @Inject constructor(
     private var apiImpl: ApiImpl,
     private var realmDao: realmDao
 ) {
