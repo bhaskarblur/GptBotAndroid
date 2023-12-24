@@ -44,6 +44,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -53,6 +54,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
@@ -62,6 +64,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import coil.compose.rememberAsyncImagePainter
@@ -101,16 +104,10 @@ class ChatScreen : ComponentActivity() {
                     showDialog.value = false;
                 })
             }
-            val messageList = viewModel.chatList.value!!
 
-            viewModel.chatList.observe(this@ChatScreen) {list ->
-                list.forEach {
-                    if(!messageList.contains(it)) {
-                        messageList.add(it)
-                    }
-                }
+            val messageList by viewModel.chatList
 
-            }
+
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -159,13 +156,14 @@ class ChatScreen : ComponentActivity() {
                         .fillMaxHeight(0.86f)
                         .scrollable(listScrollState, Orientation.Vertical)
                 ) {
-                    lifecycleScope.launch {
-                        if (messageList.size > 0) {
-                            listScrollState.animateScrollToItem(messageList.size - 1)
-                        }
-                    }
                     items(items = messageList) {
-                        MessageTile(it);
+                        MessageTile(it)
+                        LaunchedEffect(messageList){
+                            lifecycleScope.launch {
+                                Log.d("yesPrinting", "no")
+                                listScrollState.animateScrollToItem(messageList.size)
+                            }
+                        }
                     }
                 }
 
@@ -180,7 +178,7 @@ class ChatScreen : ComponentActivity() {
                     verticalAlignment = Alignment.CenterVertically
                 ) {
 
-                    if (messageList.size > 1 && !chatContinueAsk.value) {
+                    if (messageList!!.size > 1 && !chatContinueAsk.value) {
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
