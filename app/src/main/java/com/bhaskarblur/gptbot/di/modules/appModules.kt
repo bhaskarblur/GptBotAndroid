@@ -32,6 +32,9 @@ object AppModules {
 
     @Provides
     @Singleton
+    fun baseUrl() : String = "https://api.openai.com/v1/chat/"
+    @Provides
+    @Singleton
     fun realmDBInstance() : Realm = realmDB.getInstance()
 
     @Provides
@@ -52,6 +55,6 @@ object AppModules {
 
     @Singleton
     @Provides
-    fun apiClient() : Retrofit = ApiClient.getInstance(okHttpClient((OpenAiInterceptor())))
+    fun apiClient() : Retrofit = ApiClient.getInstance(okHttpClient((OpenAiInterceptor())), baseUrl())
 
 }

@@ -160,7 +160,6 @@ class ChatScreen : ComponentActivity() {
                         MessageTile(it)
                         LaunchedEffect(messageList){
                             lifecycleScope.launch {
-                                Log.d("yesPrinting", "no")
                                 listScrollState.animateScrollToItem(messageList.size)
                             }
                         }

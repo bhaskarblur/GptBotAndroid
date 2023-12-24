@@ -7,9 +7,9 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 object ApiClient {
 
-    fun getInstance(interceptorClient : OkHttpClient): Retrofit {
+    fun getInstance(interceptorClient : OkHttpClient, baseUrl: String): Retrofit {
         return Retrofit.Builder()
-            .baseUrl("https://api.openai.com/v1/chat/")
+            .baseUrl(baseUrl)
             .addConverterFactory(GsonConverterFactory.create())
             .client(interceptorClient)
             .build()

@@ -2,19 +2,14 @@ package com.bhaskarblur.gptbot.viewModel
 
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.bhaskarblur.gptbot.Repo.chatGptRepo
+import com.bhaskarblur.gptbot.Repo.chatRepo
 import com.bhaskarblur.gptbot.models.gptBody
 import com.bhaskarblur.gptbot.models.messageBody
 import com.bhaskarblur.gptbot.models.messageModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -22,7 +17,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class chatViewModel @Inject constructor(
-    private val apiServiceRepo: chatGptRepo) : ViewModel() {
+    private val apiServiceRepo: chatRepo) : ViewModel() {
 
         val chatList = mutableStateOf(listOf<messageModel>())
 
