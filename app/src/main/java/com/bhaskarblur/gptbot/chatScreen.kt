@@ -156,7 +156,12 @@ class ChatScreen : ComponentActivity() {
                         .fillMaxHeight(0.86f)
                         .scrollable(listScrollState, Orientation.Vertical)
                 ) {
-                    items(items = messageList) {
+                    items(
+                        items = messageList,
+                        key = {
+                            it.timestamp
+                        }
+                    ) {
                         MessageTile(it)
                         LaunchedEffect(messageList){
                             lifecycleScope.launch {
